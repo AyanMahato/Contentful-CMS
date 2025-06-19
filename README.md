@@ -1,40 +1,219 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# README.md
 
-## Getting Started
+# ✨ EcoNova Product Launch Landing Page
 
-First, run the development server:
+A fully dynamic and responsive landing page for the fictional sustainable technology product **EcoNova**, built with **Next.js**, **TypeScript**, **React**, and **Contentful**.
 
+This project demonstrates a scalable headless architecture allowing marketing teams to independently manage and reorder landing page content without developer intervention.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/econova-landing.git
+cd econova-landing
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+```bash
+npm install
+# or
+yarn install
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### 3. Configure Environment Variables
+Create a `.env.local` file in the root and add:
+```env
+CONTENTFUL_SPACE_ID=your_space_id
+CONTENTFUL_ACCESS_TOKEN=your_access_token
+CONTENTFUL_PREVIEW_TOKEN=your_preview_token (optional)
+CONTENTFUL_ENVIRONMENT=master
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### 4. Run Locally
+```bash
+npm run dev
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📁 Contentful Setup
 
-To learn more about Next.js, take a look at the following resources:
+### Content Types
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+#### ✍️ Landing Page
+- Title
+- Slug
+- Sections (Reference array of all section types)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### 📊 Section Types (all with `Title` field)
 
-## Deploy on Vercel
+##### 1. Hero Section
+- Headline
+- Sub-headline
+- Background Image (Asset)
+- CTA Button Text
+- CTA Button Link
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+##### 2. Features Section
+- Reference to Feature Items
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+##### 3. Feature Item
+- Icon (text or asset)
+- Title
+- Description
+
+##### 4. Testimonials Section
+- List of Testimonials
+
+##### 5. Testimonial
+- Quote
+- Author Name
+- Author Title/Company
+
+##### 6. Product Specs Section
+- Description
+- Key Specs (list)
+- Product Images (array of assets)
+
+##### 7. Call to Action (CTA)
+- Headline
+- Text
+- Button Text & Link
+
+##### 8. Footer
+- Copyright Text
+- List of Social Links (icon & URL)
+
+##### 9. Shared Content (Reusable CTA Block)
+- Headline, Text, Button
+- Used across multiple pages
+
+> ⚠️ Create one `Landing Page` entry and populate it with a few diverse sections.
+
+### Localization
+- Enable localization for the Hero Section and Reusable CTA.
+- Create English and Spanish versions.
+
+---
+
+## 📈 Architecture Overview
+
+### 🛠️ React Component Structure
+Each section type has its own modular component:
+```
+/components
+  /Hero.tsx
+  /Features.tsx
+  /Testimonials.tsx
+  /CTA.tsx
+  /Footer.tsx
+```
+
+These are rendered dynamically based on the array in Contentful:
+```tsx
+const SECTION_COMPONENTS = {
+  hero: Hero,
+  features: Features,
+  testimonials: Testimonials,
+  cta: CTA,
+  footer: Footer,
+};
+```
+
+### 🧰 Data Fetching
+- Uses **Contentful GraphQL API** for efficient structured querying.
+- Abstracted with custom hooks: `useLandingPage(slug)`.
+
+### 📅 Rendering Strategy
+- Uses **Static Site Generation (SSG)** with `getStaticProps` + `getStaticPaths`
+- Enables fast load times and SEO while keeping the site stable
+- Content refreshes supported via **Incremental Static Regeneration (ISR)**
+
+---
+
+## ⚖️ Design Principles
+
+### 🤝 Headless Best Practices
+- **Content-first architecture**: UI is fully driven by Contentful data
+- **Channel-agnostic**: Content could feed other platforms (mobile apps, kiosks, etc.)
+- **Reusable blocks**: Shared CTA content used across multiple sections/pages
+
+### ♻️ Scalability
+- New section types or fields can be added in Contentful without code changes
+- Components follow atomic design principles
+- Clear separation of concerns with API-layer, components, and styles
+
+---
+
+## 🔐 Content Preview (Bonus)
+- Supported using Contentful’s Preview API
+- Uses `preview` query param to switch preview mode in `getStaticProps`
+- Authenticated via preview token and requires enabling Next.js preview mode
+
+---
+
+## 🌐 Localization Strategy
+- Contentful locale setup: English (default), Spanish
+- Use `locale` query param to fetch localized entries
+- Frontend supports `/en` and `/es` routes
+
+---
+
+## 📊 Performance
+- Optimized images via `next/image`
+- Lightweight GraphQL queries
+- Lazy-loaded sections
+
+---
+
+## 🌇 Accessibility
+- Semantic HTML
+- ARIA labels for buttons, interactive content
+- High color contrast, focus outlines, keyboard support
+
+---
+
+## 🚫 Assumptions & Trade-offs
+- Assumes only a single landing page per slug
+- Limited preview support to reduce complexity
+- Fallback components for incomplete Contentful entries
+
+---
+
+## 📲 Demo
+Deployed on Vercel: [https://econova-landing.vercel.app](https://econova-landing.vercel.app)
+
+---
+
+## 📹 Video Walkthrough
+[loom.com/your-demo-video-link](https://loom.com/your-demo-video-link)
+
+---
+
+## ⚖️ Future Improvements
+- Integrate live preview
+- Add more localization features
+- Enable drag-and-drop Contentful editor UX
+- Add unit tests for components
+
+---
+
+## 🔧 Tech Stack
+- **Next.js**, **React**, **TypeScript**
+- **Tailwind CSS** for styling
+- **Contentful** as Headless CMS
+- **GraphQL** API Integration
+- **Vercel** for deployment
+
+---
+
+## 👤 Author
+**Ayan Kumar Mahato**  
+[LinkedIn](https://linkedin.com/in/ayan-kumar-mahato-akm999) | [GitHub](https://github.com/AyanMahato)
+
+---
